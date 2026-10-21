@@ -1,0 +1,6 @@
+{
+  "name": "Tenvylo — مؤقت مذاكرة احترافي",
+  "description": "مؤقت مذاكرة احترافي وتجربة تركيز غامرة هادئة بتصميم فاخر وسمات متعددة وإحصائيات دقيقة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
