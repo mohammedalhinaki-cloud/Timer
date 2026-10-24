@@ -36,7 +36,7 @@ export const StatsView: React.FC<StatsViewProps> = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
-            <BarChart3 className="w-4 h-4" />
+            <ChartNoAxesColumnIncreasing className="w-4 h-4" />
           </div>
           <h2 className={`text-base sm:text-lg font-bold ${theme.timerTextColor}`}>
             إحصائيات إنجازك
