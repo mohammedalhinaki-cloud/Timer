@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flame, Clock, Award, BarChart3, Calendar, RotateCcw, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Flame, Clock, Award, ChartNoAxesColumnIncreasing, Calendar, RotateCcw, CheckCircle2, AlertCircle } from 'lucide-react';
 import { StudyStatsSummary, StudySessionLog } from '../types/stats';
 import { ThemeConfig } from '../types/theme';
 import { saveAllSessions } from '../utils/stats';

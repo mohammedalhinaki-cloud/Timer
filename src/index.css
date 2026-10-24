@@ -55,3 +55,34 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* One exact geometry for the three top actions, independent of content and RTL. */
+.tenvylo-header-action {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(34, 211, 238, .22);
+  border-radius: 14px;
+  background: rgba(15, 35, 53, .48);
+  color: #67e8f9;
+  cursor: pointer;
+  line-height: 1;
+  transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
+}
+.tenvylo-header-action svg { display: block; flex-shrink: 0; }
+.tenvylo-header-action:hover { background: rgba(34, 211, 238, .11); border-color: rgba(34,211,238,.46); }
+.tenvylo-header-action:active { transform: scale(.96); }
+.tenvylo-header-action:focus-visible { outline: 2px solid #22d3ee; outline-offset: 3px; }
+.tenvylo-header-action--light {
+  background: rgba(255,255,255,.82);
+  border-color: rgba(8,145,178,.25);
+  color: #0e7490;
+}
+.tenvylo-header-action--light:hover { background: #e0f7fb; }
+@media (prefers-reduced-motion: reduce) {
+  .tenvylo-header-action { transition: none; }
+}

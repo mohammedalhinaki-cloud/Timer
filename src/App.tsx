@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Palette,
+  Share2,
   Play,
   Sparkles,
   Flame,
@@ -12,7 +13,7 @@ import {
 import { THEMES, ThemeId, ThemeConfig } from './types/theme';
 import { useStudyTimer } from './hooks/useStudyTimer';
 import { calculateStatsSummary, getAllSessions } from './utils/stats';
-import { warmupAudioContext } from './utils/sound';
+import { warmupAudioContext, stopRepeatingFinishBell } from './utils/sound';
 import { requestFullscreenSafe } from './utils/screen';
 import { FocusMode } from './components/FocusMode';
 import { StatsView } from './components/StatsView';
@@ -87,6 +88,30 @@ export default function App() {
   const [infoModalType, setInfoModalType] = useState<InfoModalType>(null);
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [customInputMins, setCustomInputMins] = useState(30);
+  const [shareStatus, setShareStatus] = useState('');
+
+  const handleShare = async () => {
+    const url = window.location.origin + '/';
+    const data = { title: 'Tenvylo | تينڤيلو', text: 'مساحة هادئة للمذاكرة والتركيز', url };
+    if (navigator.share) {
+      try { await navigator.share(data); return; }
+      catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+      }
+    }
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(url);
+      else {
+        const field = document.createElement('textarea');
+        field.value = url; field.style.position = 'fixed'; field.style.opacity = '0';
+        document.body.append(field); field.select();
+        if (!document.execCommand('copy')) throw new Error('Copy not supported');
+        field.remove();
+      }
+      setShareStatus('تم نسخ رابط الموقع');
+    } catch { setShareStatus('تعذر نسخ الرابط، يمكنك نسخه من شريط العنوان'); }
+    window.setTimeout(() => setShareStatus(''), 2800);
+  };
 
   // Stats state
   const [allSessions, setAllSessions] = useState(() => getAllSessions());
@@ -178,41 +203,27 @@ export default function App() {
             </div>
           </div>
 
-          {/* Header Action Buttons */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Today Streak & Minutes Badge */}
-            <div
-              className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl border text-xs font-medium ${activeTheme.badgeBg}`}
-              title="إحصائية المذاكرة لليوم"
-            >
-              <div className="flex items-center gap-1">
-                <Flame className="w-3.5 h-3.5 text-amber-400" />
-                <span className="font-mono tabular-nums font-bold">{stats.currentStreakDays}</span>
-                <span className="text-[10px] opacity-80 hidden sm:inline">أيام</span>
-              </div>
+          {/* Identical touch targets in a consistent RTL action group. */}
+          <div className="flex shrink-0 items-center gap-2" role="group" aria-label="إجراءات الموقع">
+            <div className={`hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-xl border text-xs font-medium ${activeTheme.badgeBg}`}
+              title="إحصائية المذاكرة لليوم">
+              <Flame className="w-3.5 h-3.5 text-amber-400" />
+              <span className="font-mono tabular-nums font-bold">{stats.currentStreakDays}</span>
               <span className="opacity-40">|</span>
-              <div className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-cyan-400" />
-                <span className="font-mono tabular-nums font-bold">{stats.todayMinutes}</span>
-                <span className="text-[10px] opacity-80">د</span>
-              </div>
+              <Clock className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="font-mono tabular-nums font-bold">{stats.todayMinutes}</span>
+              <span className="text-[10px] opacity-80">د</span>
             </div>
-
-            {/* PWA Install Button */}
+            <button type="button" onClick={() => setShowThemeModal(true)}
+              className={`tenvylo-header-action ${activeTheme.isLight ? 'tenvylo-header-action--light' : ''}`}
+              title="اختيار ألوان الموقع" aria-label="اختيار ألوان الموقع">
+              <Palette size={19} strokeWidth={1.9} aria-hidden="true" />
+            </button>
             <PWAInstallButton theme={activeTheme} />
-
-            {/* Theme Switcher Button */}
-            <button
-              onClick={() => setShowThemeModal(true)}
-              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border transition-colors text-xs font-medium ${
-                activeTheme.isLight
-                  ? 'border-slate-300 hover:bg-slate-100 text-slate-700'
-                  : 'border-white/10 hover:bg-white/10 text-slate-200'
-              }`}
-              title="تغيير السمة والمظهر"
-            >
-              <Palette className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden sm:inline">{activeTheme.name}</span>
+            <button type="button" onClick={handleShare}
+              className={`tenvylo-header-action ${activeTheme.isLight ? 'tenvylo-header-action--light' : ''}`}
+              title="مشاركة الموقع" aria-label="مشاركة الموقع">
+              <Share2 size={19} strokeWidth={1.9} aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -493,6 +504,7 @@ export default function App() {
         isOpen={timer.status === 'completed'}
         targetMinutes={timer.selectedMinutes}
         theme={activeTheme}
+        onStopBell={stopRepeatingFinishBell}
         onStartAnother={() => {
           timer.resetToIdle();
           handleStartStudy();
@@ -502,6 +514,12 @@ export default function App() {
           refreshStats();
         }}
       />
+
+      {shareStatus && (
+        <div role="status" className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[100] rounded-xl border border-cyan-400/30 bg-slate-950 px-5 py-3 text-sm text-cyan-100 shadow-xl">
+          {shareStatus}
+        </div>
+      )}
 
       {/* Legal & Info Modals */}
       <InfoModals

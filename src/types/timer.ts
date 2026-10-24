@@ -3,6 +3,7 @@ export type TimerMode = 'countdown' | 'stopwatch';
 export type TimerStatus = 'idle' | 'running' | 'paused' | 'completed';
 
 export interface ActiveSessionState {
+  sessionId?: string; // Added compatibly: restored older sessions still work
   mode: TimerMode;
   targetMinutes: number;         // e.g. 25
   totalDurationMs: number;       // e.g. 25 * 60 * 1000

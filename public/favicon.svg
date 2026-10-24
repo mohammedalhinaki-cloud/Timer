@@ -1,31 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0a101d"/>
-      <stop offset="100%" stop-color="#05080f"/>
+    <linearGradient id="night" x1="42" y1="12" x2="480" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10263D"/><stop offset="1" stop-color="#07121F"/>
     </linearGradient>
-    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#818cf8"/>
-      <stop offset="100%" stop-color="#c084fc"/>
+    <linearGradient id="cyan" x1="115" y1="150" x2="391" y2="370" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8EF7FF"/><stop offset="1" stop-color="#15AED5"/>
     </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="16" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
   </defs>
-
-  <!-- Background -->
-  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
-  
-  <!-- Outer subtle track -->
-  <circle cx="256" cy="256" r="160" stroke="#1e293b" stroke-width="24" fill="none"/>
-  
-  <!-- Glowing Timer Arc -->
-  <circle cx="256" cy="256" r="160" stroke="url(#ringGrad)" stroke-width="24" stroke-linecap="round"
-    stroke-dasharray="1005" stroke-dashoffset="280" fill="none" filter="url(#glow)"/>
-
-  <!-- Center Zen Dot & Hourglass Core -->
-  <circle cx="256" cy="256" r="28" fill="#38bdf8"/>
-  <circle cx="256" cy="96" r="16" fill="#818cf8"/>
+  <rect width="512" height="512" rx="116" fill="url(#night)"/>
+  <rect x="226" y="64" width="60" height="31" rx="15.5" fill="#53D8F0"/>
+  <circle cx="256" cy="273" r="150" stroke="#24475F" stroke-width="29"/>
+  <circle cx="256" cy="273" r="150" stroke="url(#cyan)" stroke-width="29"
+    stroke-linecap="round" stroke-dasharray="686 943" transform="rotate(-89 256 273)"/>
+  <path d="M256 190V275L314 308" stroke="#E6FCFF" stroke-width="25"
+    stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="256" cy="273" r="16" fill="#53D8F0"/>
 </svg>

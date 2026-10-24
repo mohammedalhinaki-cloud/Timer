@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { TimerMode, TimerStatus, ActiveSessionState } from '../types/timer';
 import { requestWakeLock, releaseWakeLock, showSessionCompletionNotification } from '../utils/screen';
-import { playGentleFinishChime } from '../utils/sound';
+import { startRepeatingFinishBell, stopRepeatingFinishBell } from '../utils/sound';
 import { logCompletedSession } from '../utils/stats';
 
 const STORAGE_SESSION_KEY = 'tenvylo_active_timer_v1';
 const STORAGE_PRESET_KEY = 'tenvylo_last_preset';
+const STORAGE_LAST_COMPLETED_KEY = 'tenvylo_last_completed_timer_v1';
 
 export function useStudyTimer() {
   // Preset duration in minutes: default 25 or saved in localStorage
@@ -54,6 +55,9 @@ export function useStudyTimer() {
   const modeRef = useRef<TimerMode>('countdown');
   const statusRef = useRef<TimerStatus>('idle');
   const selectedMinutesRef = useRef<number>(25);
+  const sessionIdRef = useRef<string>('');
+
+  useEffect(() => () => stopRepeatingFinishBell(), []);
 
   // Synchronize refs
   useEffect(() => {
@@ -81,6 +85,7 @@ export function useStudyTimer() {
 
     const state: ActiveSessionState = {
       mode: modeRef.current,
+      sessionId: sessionIdRef.current,
       targetMinutes: selectedMinutesRef.current,
       totalDurationMs: totalDurationRef.current,
       startTime: startTimeRef.current,
@@ -100,6 +105,9 @@ export function useStudyTimer() {
 
   // Handle successful session completion
   const handleSessionComplete = useCallback((elapsedSeconds: number, targetMins: number) => {
+    // RAF, interval and visibilitychange can all fire together at the deadline.
+    if (statusRef.current !== 'running') return;
+    statusRef.current = 'completed';
     setStatus('completed');
     statusRef.current = 'completed';
     releaseWakeLock();
@@ -110,8 +118,8 @@ export function useStudyTimer() {
       // ignore
     }
 
-    // Play pleasant finish chime
-    playGentleFinishChime();
+    // Continuous bell: the source loops until the user explicitly acknowledges it.
+    startRepeatingFinishBell();
 
     // Browser notification if granted
     showSessionCompletionNotification(
@@ -119,13 +127,21 @@ export function useStudyTimer() {
       `أتممت بنجاح ${targetMins} دقيقة من التركيز الخالص مع تينڤيلو.`
     );
 
-    // Record completed session in statistics
-    logCompletedSession({
-      durationSeconds: elapsedSeconds,
-      mode: 'countdown',
-      targetMinutes: targetMins,
-      completed: true,
-    });
+    // Persistent completion marker protects against duplicate logs after a reload.
+    const sessionId = sessionIdRef.current;
+    let recorded = false;
+    try {
+      recorded = !!sessionId && localStorage.getItem(STORAGE_LAST_COMPLETED_KEY) === sessionId;
+      if (!recorded && sessionId) localStorage.setItem(STORAGE_LAST_COMPLETED_KEY, sessionId);
+    } catch { /* private browsing: in-memory status guard still applies */ }
+    if (!recorded) {
+      logCompletedSession({
+        durationSeconds: elapsedSeconds,
+        mode: 'countdown',
+        targetMinutes: targetMins,
+        completed: true,
+      });
+    }
   }, []);
 
   // Restore saved session on mount
@@ -148,6 +164,7 @@ export function useStudyTimer() {
       setTotalSessionMs(totalMs);
       totalDurationRef.current = totalMs;
       startTimeRef.current = saved.startTime || now;
+      sessionIdRef.current = saved.sessionId || `legacy_${saved.startTime}_${saved.targetEndTime}`;
       elapsedBeforePauseRef.current = saved.elapsedBeforePauseMs || 0;
 
       if (saved.status === 'paused') {
@@ -160,7 +177,8 @@ export function useStudyTimer() {
         if (savedMode === 'countdown' && saved.targetEndTime) {
           const remaining = saved.targetEndTime - now;
           if (remaining <= 0) {
-            // Completed while user was away
+            // Completed while user was away; treat this as an active countdown.
+            statusRef.current = 'running';
             setCurrentMs(0);
             handleSessionComplete(Math.round(totalMs / 1000), targetMins);
           } else {
@@ -294,6 +312,8 @@ export function useStudyTimer() {
     const targetMode = newMode;
     const now = Date.now();
 
+    stopRepeatingFinishBell();
+    sessionIdRef.current = `tenvylo_${now}_${Math.random().toString(36).slice(2)}`;
     setMode(targetMode);
     modeRef.current = targetMode;
 
@@ -343,6 +363,7 @@ export function useStudyTimer() {
 
     const state: ActiveSessionState = {
       mode: targetMode,
+      sessionId: sessionIdRef.current,
       targetMinutes: targetMins,
       totalDurationMs: durationMs,
       startTime: now,
@@ -410,6 +431,7 @@ export function useStudyTimer() {
   }, [status, pauseTimer, resumeTimer]);
 
   const endSessionEarly = useCallback((saveStats: boolean = true) => {
+    stopRepeatingFinishBell();
     releaseWakeLock();
 
     let elapsedSec = 0;
@@ -447,6 +469,7 @@ export function useStudyTimer() {
   }, [currentMs]);
 
   const resetToIdle = useCallback(() => {
+    stopRepeatingFinishBell();
     releaseWakeLock();
     setStatus('idle');
     statusRef.current = 'idle';
