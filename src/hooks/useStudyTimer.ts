@@ -74,7 +74,7 @@ export function useStudyTimer() {
 
   // Persist current session state to localStorage
   const persistSession = useCallback((overrideRemainingMs?: number) => {
-    if (statusRef.current === 'idle') {
+    if (statusRef.current === 'idle' || statusRef.current === 'completed') {
       try {
         localStorage.removeItem(STORAGE_SESSION_KEY);
       } catch {
@@ -150,7 +150,10 @@ export function useStudyTimer() {
       const raw = localStorage.getItem(STORAGE_SESSION_KEY);
       if (!raw) return;
       const saved: ActiveSessionState = JSON.parse(raw);
-      if (!saved || !saved.status || saved.status === 'idle') return;
+      if (!saved || !saved.status || saved.status === 'idle' || saved.status === 'completed') {
+        if (saved?.status === 'completed') localStorage.removeItem(STORAGE_SESSION_KEY);
+        return;
+      }
 
       const now = Date.now();
       const savedMode = saved.mode || 'countdown';
