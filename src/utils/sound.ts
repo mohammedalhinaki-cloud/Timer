@@ -102,7 +102,7 @@ function play(id: AlarmSoundId, repeat: boolean): void {
     const gain=ctx.createGain();
     source.buffer=bufferFor(ctx,id);
     source.loop=repeat;
-    gain.gain.value=id==='soft'?.35:id==='school'?.5:.6;
+    gain.gain.value = id === 'soft' ? 0.35 : id === 'school' ? 0.5 : 0.6;
     source.connect(gain);
     gain.connect(ctx.destination);
     if(repeat){looping=source;loopGain=gain;}
