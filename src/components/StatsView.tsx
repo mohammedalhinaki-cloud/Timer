@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flame, Clock, Award, ChartNoAxesColumnIncreasing, Calendar, RotateCcw, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Flame, Clock, Award, ChartNoAxesColumnIncreasing, Calendar, RotateCcw, CheckCircle2, AlertCircle, ChevronDown } from 'lucide-react';
 import { StudyStatsSummary, StudySessionLog } from '../types/stats';
 import { ThemeConfig } from '../types/theme';
 import { saveAllSessions } from '../utils/stats';
@@ -17,6 +17,7 @@ export const StatsView: React.FC<StatsViewProps> = ({
   onRefreshStats,
   theme,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showConfirmReset, setShowConfirmReset] = useState(false);
 
@@ -31,30 +32,40 @@ export const StatsView: React.FC<StatsViewProps> = ({
   };
 
   return (
-    <section className="w-full max-w-4xl mx-auto mt-6 sm:mt-10 px-2 sm:px-4">
-      {/* Section Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
-            <ChartNoAxesColumnIncreasing className="w-4 h-4" />
-          </div>
-          <h2 className={`text-base sm:text-lg font-bold ${theme.timerTextColor}`}>
-            إحصائيات إنجازك
-          </h2>
-        </div>
-        <div className="flex items-center gap-2">
+    <section className="w-full max-w-4xl mx-auto mt-4 sm:mt-6 px-2 sm:px-4">
+      {/* Compact, accessible statistics accordion: closed by default. */}
+      <button
+        type="button"
+        onClick={() => setIsExpanded((open) => !open)}
+        aria-expanded={isExpanded}
+        aria-controls="tenvylo-stats-panel"
+        className={`group w-full flex items-center justify-between gap-3 rounded-2xl border px-4 py-3.5 sm:px-5 sm:py-4 text-right transition-colors ${theme.surfaceBg} ${theme.surfaceBorder} ${theme.isLight ? 'hover:bg-slate-100' : 'hover:bg-white/[0.08]'}`}
+      >
+        <span className="flex items-center gap-2.5">
+          <span className="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+            <ChartNoAxesColumnIncreasing className="w-4 h-4" aria-hidden="true" />
+          </span>
+          <span className={`text-base sm:text-lg font-bold ${theme.timerTextColor}`}>إحصائيات إنجازك</span>
+        </span>
+        <span className="flex items-center gap-2 text-xs sm:text-sm text-slate-400">
+          <span>{isExpanded ? 'إخفاء الإحصائيات' : 'عرض الإحصائيات'}</span>
+          <ChevronDown
+            className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            aria-hidden="true"
+          />
+        </span>
+      </button>
+
+      <div id="tenvylo-stats-panel" hidden={!isExpanded} className="pt-4 sm:pt-5">
+        <div className="flex justify-end mb-3">
           <button
+            type="button"
             onClick={() => setShowHistoryModal(true)}
-            className={`text-xs px-2.5 sm:px-3 py-1.5 rounded-xl border transition ${
-              theme.isLight
-                ? 'border-slate-300 hover:bg-slate-100 text-slate-700'
-                : 'border-white/10 hover:bg-white/10 text-slate-300'
-            }`}
+            className={`text-xs px-3 py-1.5 rounded-xl border transition ${theme.isLight ? 'border-slate-300 hover:bg-slate-100 text-slate-700' : 'border-white/10 hover:bg-white/10 text-slate-300'}`}
           >
             سجل الجلسات ({allSessions.length})
           </button>
         </div>
-      </div>
 
       {/* 4 Summary Metric Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3.5 mb-4 sm:mb-6">
@@ -317,6 +328,7 @@ export const StatsView: React.FC<StatsViewProps> = ({
           </div>
         </div>
       )}
+      </div>
     </section>
   );
 };

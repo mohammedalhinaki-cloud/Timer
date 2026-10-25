@@ -3,12 +3,10 @@ import {
   Palette,
   Share2,
   Play,
-  Sparkles,
   Flame,
   Clock,
   SlidersHorizontal,
   Timer,
-  HelpCircle,
 } from 'lucide-react';
 import { THEMES, ThemeId, ThemeConfig } from './types/theme';
 import { useStudyTimer } from './hooks/useStudyTimer';
@@ -22,7 +20,6 @@ import { ThemeModal } from './components/ThemeModal';
 import { CompletionModal } from './components/CompletionModal';
 import { PWAInstallButton } from './components/PWAInstallButton';
 import { OfflineIndicator } from './components/OfflineIndicator';
-import { InfoModals, InfoModalType } from './components/InfoModals';
 import { ADS_ENABLED } from './config/ads';
 
 const STORAGE_THEME_KEY = 'tenvylo_theme_id';
@@ -85,7 +82,6 @@ export default function App() {
 
   // Modals state
   const [showThemeModal, setShowThemeModal] = useState(false);
-  const [infoModalType, setInfoModalType] = useState<InfoModalType>(null);
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [customInputMins, setCustomInputMins] = useState(30);
   const [shareStatus, setShareStatus] = useState('');
@@ -230,14 +226,10 @@ export default function App() {
       </header>
 
       {/* Main Content Area - Optimized mobile vertical spacing */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-3 sm:py-6 max-w-4xl mx-auto w-full">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-5 sm:py-8 max-w-5xl mx-auto w-full">
         {/* Welcoming Subtitle */}
-        <div className="text-center mb-4 sm:mb-6">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 sm:py-1 rounded-full bg-white/5 border border-white/10 text-[11px] sm:text-xs text-slate-400 mb-2">
-            <Sparkles className="w-3 h-3 text-cyan-400" />
-            <span>بيئة هادئة ومصممة لأقصى درجات التركيز</span>
-          </div>
-          <h2 className={`text-xl sm:text-3xl md:text-4xl font-bold tracking-tight ${activeTheme.timerTextColor}`}>
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ${activeTheme.timerTextColor}`}>
             مساحتك الهادئة للتركيز والإنجاز
           </h2>
           <p className="text-[11px] sm:text-sm text-slate-400 mt-1 sm:mt-2 max-w-md mx-auto">
@@ -247,7 +239,7 @@ export default function App() {
 
         {/* Central Timer Card */}
         <div
-          className={`w-full max-w-sm sm:max-w-md md:max-w-lg rounded-3xl p-5 sm:p-7 border shadow-2xl transition-all duration-300 ${activeTheme.surfaceBg} ${activeTheme.surfaceBorder} text-center`}
+          className={`w-full max-w-md sm:max-w-lg rounded-3xl p-6 sm:p-8 border shadow-2xl transition-all duration-300 ${activeTheme.surfaceBg} ${activeTheme.surfaceBorder} text-center`}
         >
           {/* Mode Switcher: Countdown vs Stopwatch */}
           <div className="flex items-center justify-center p-1 rounded-2xl bg-black/20 border border-white/5 mb-4 sm:mb-6 max-w-xs mx-auto">
@@ -382,48 +374,6 @@ export default function App() {
         />
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 w-full border-t border-white/5 mt-8 sm:mt-12 py-6 px-4 text-center text-xs text-slate-400">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-200">تينڤيلو • Tenvylo</span>
-            <span>© {new Date().getFullYear()} — صُمم للسكينة والتفوق</span>
-          </div>
-
-          {/* Links for Privacy Compliance */}
-          <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
-            <button
-              onClick={() => setInfoModalType('privacy')}
-              className="hover:text-cyan-400 transition"
-            >
-              سياسة الخصوصية
-            </button>
-            <span>•</span>
-            <button
-              onClick={() => setInfoModalType('terms')}
-              className="hover:text-cyan-400 transition"
-            >
-              شروط الاستخدام والتواصل
-            </button>
-            <span>•</span>
-            <button
-              onClick={() => setInfoModalType('about')}
-              className="hover:text-cyan-400 transition"
-            >
-              عن تينڤيلو
-            </button>
-            <span>•</span>
-            <button
-              onClick={() => setInfoModalType('shortcuts')}
-              className="hover:text-cyan-400 transition flex items-center gap-1"
-            >
-              <HelpCircle className="w-3 h-3" />
-              <span>الاختصارات</span>
-            </button>
-          </div>
-        </div>
-      </footer>
-
       {/* Custom Duration Modal */}
       {showCustomModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
@@ -520,13 +470,6 @@ export default function App() {
           {shareStatus}
         </div>
       )}
-
-      {/* Legal & Info Modals */}
-      <InfoModals
-        type={infoModalType}
-        onClose={() => setInfoModalType(null)}
-        theme={activeTheme}
-      />
 
       {/* Offline Status Toast */}
       <OfflineIndicator />
