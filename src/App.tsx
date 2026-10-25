@@ -7,6 +7,8 @@ import {
   Clock,
   SlidersHorizontal,
   Timer,
+  BookOpen,
+  ArrowUpLeft,
 } from 'lucide-react';
 import { THEMES, ThemeId, ThemeConfig } from './types/theme';
 import { useStudyTimer } from './hooks/useStudyTimer';
@@ -374,16 +376,30 @@ export default function App() {
         />
       </main>
 
-      {/* Single-line, minimal footer; study tools link opens the requested site. */}
-      <footer className="relative z-10 w-full border-t border-white/10 px-3 py-2.5 text-center text-xs text-slate-400">
-        <div className="flex items-center justify-center gap-3 whitespace-nowrap">
-          <span className={`font-semibold ${activeTheme.timerTextColor}`}>تينڤيلو</span>
-          <span aria-hidden="true" className="opacity-40">•</span>
+      {/* A compact, decorated one-line footer kept directly below the statistics. */}
+      <footer className="relative z-10 w-full px-3 pt-3 pb-3 sm:pt-4 sm:pb-4">
+        <div
+          className={`relative mx-auto flex w-full max-w-md items-center justify-center gap-2.5 overflow-hidden rounded-2xl border px-3 py-2.5 shadow-lg backdrop-blur-md whitespace-nowrap sm:gap-3 sm:px-5 ${activeTheme.isLight
+            ? 'border-cyan-600/20 bg-white/75 shadow-slate-300/20'
+            : 'border-cyan-400/20 bg-gradient-to-r from-cyan-500/[0.09] via-slate-900/80 to-cyan-500/[0.09] shadow-cyan-950/20'}`}
+        >
+          <span aria-hidden="true" className="pointer-events-none absolute inset-x-[20%] top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
+          <span aria-hidden="true" className="pointer-events-none absolute -right-5 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-xl" />
+          <span aria-hidden="true" className="pointer-events-none absolute -left-5 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-xl" />
+          <span className="relative flex shrink-0 items-center gap-1.5">
+            <Timer className="h-3.5 w-3.5 text-cyan-400" strokeWidth={1.8} aria-hidden="true" />
+            <span className={`text-xs font-bold ${activeTheme.timerTextColor}`}>تينڤيلو</span>
+          </span>
+          <span aria-hidden="true" className="relative h-3.5 w-px shrink-0 bg-cyan-400/30" />
           <a
             href="https://study-tools-f3398d.pages.dev/"
-            className="font-medium text-cyan-400 hover:text-cyan-300 underline-offset-4 hover:underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400"
+            className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] sm:text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 ${activeTheme.isLight
+              ? 'border-cyan-600/20 bg-cyan-50 text-cyan-800 hover:bg-cyan-100'
+              : 'border-cyan-400/20 bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20'}`}
           >
-            أدوات الدراسة
+            <BookOpen className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden="true" />
+            <span>أدوات الدراسة</span>
+            <ArrowUpLeft className="h-3 w-3 opacity-75" aria-hidden="true" />
           </a>
         </div>
       </footer>
