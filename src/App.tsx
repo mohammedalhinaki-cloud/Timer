@@ -168,7 +168,7 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen min-h-[100dvh] flex flex-col justify-between transition-colors duration-500 text-slate-100 overflow-x-hidden ${activeTheme.bgGradient}`}
+      className={`min-h-screen min-h-[100dvh] flex flex-col transition-colors duration-500 text-slate-100 overflow-x-hidden ${activeTheme.bgGradient}`}
     >
       {/* Background ambient lighting */}
       <div
@@ -226,9 +226,9 @@ export default function App() {
       </header>
 
       {/* Main Content Area - Optimized mobile vertical spacing */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-5 sm:py-8 max-w-5xl mx-auto w-full">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-start px-3 sm:px-4 pt-2 pb-5 sm:pt-4 sm:pb-7 max-w-5xl mx-auto w-full">
         {/* Welcoming Subtitle */}
-        <div className="text-center mb-6 sm:mb-8">
+        <div className="text-center mb-5 sm:mb-7">
           <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ${activeTheme.timerTextColor}`}>
             مساحتك الهادئة للتركيز والإنجاز
           </h2>
@@ -373,6 +373,20 @@ export default function App() {
           theme={activeTheme}
         />
       </main>
+
+      {/* Single-line, minimal footer; study tools link opens the requested site. */}
+      <footer className="relative z-10 w-full border-t border-white/10 px-3 py-3 text-center text-xs text-slate-400">
+        <div className="flex items-center justify-center gap-3 whitespace-nowrap">
+          <span className={`font-semibold ${activeTheme.timerTextColor}`}>تينڤيلو</span>
+          <span aria-hidden="true" className="opacity-40">•</span>
+          <a
+            href="https://study-tools-f3398d.pages.dev/"
+            className="font-medium text-cyan-400 hover:text-cyan-300 underline-offset-4 hover:underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400"
+          >
+            أدوات الدراسة
+          </a>
+        </div>
+      </footer>
 
       {/* Custom Duration Modal */}
       {showCustomModal && (
