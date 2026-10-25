@@ -21,6 +21,7 @@ import { AdSlot } from './components/AdSlot';
 import { ThemeModal } from './components/ThemeModal';
 import { CompletionModal } from './components/CompletionModal';
 import { PWAInstallButton } from './components/PWAInstallButton';
+import { AlarmSettingsButton } from './components/AlarmSettingsButton';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { ADS_ENABLED } from './config/ads';
 
@@ -179,10 +180,10 @@ export default function App() {
       />
 
       {/* Top Header - Balanced and streamlined with sound & bell removed */}
-      <header className="relative z-20 w-full max-w-5xl mx-auto px-4 sm:px-6 pt-3 sm:pt-5 pb-2">
+      <header className="relative z-20 w-full max-w-5xl mx-auto px-3 sm:px-6 pt-3 sm:pt-5 pb-2">
         <div className="flex items-center justify-between">
           {/* Logo & Brand Name */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shadow-lg shadow-cyan-500/5">
               <Timer className="w-5 h-5 text-cyan-400" />
             </div>
@@ -191,7 +192,7 @@ export default function App() {
                 <h1 className={`text-lg sm:text-xl font-bold tracking-tight ${activeTheme.timerTextColor}`}>
                   تينڤيلو
                 </h1>
-                <span className="text-[11px] sm:text-xs font-mono font-medium text-slate-400">
+                <span className="hidden sm:inline text-[11px] sm:text-xs font-mono font-medium text-slate-400">
                   Tenvylo
                 </span>
               </div>
@@ -202,7 +203,7 @@ export default function App() {
           </div>
 
           {/* Identical touch targets in a consistent RTL action group. */}
-          <div className="flex shrink-0 items-center gap-2" role="group" aria-label="إجراءات الموقع">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2" role="group" aria-label="إجراءات الموقع">
             <div className={`hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-xl border text-xs font-medium ${activeTheme.badgeBg}`}
               title="إحصائية المذاكرة لليوم">
               <Flame className="w-3.5 h-3.5 text-amber-400" />
@@ -217,6 +218,7 @@ export default function App() {
               title="اختيار ألوان الموقع" aria-label="اختيار ألوان الموقع">
               <Palette size={19} strokeWidth={1.9} aria-hidden="true" />
             </button>
+            <AlarmSettingsButton theme={activeTheme} />
             <PWAInstallButton theme={activeTheme} />
             <button type="button" onClick={handleShare}
               className={`tenvylo-header-action ${activeTheme.isLight ? 'tenvylo-header-action--light' : ''}`}
@@ -228,7 +230,7 @@ export default function App() {
       </header>
 
       {/* Main Content Area - Optimized mobile vertical spacing */}
-      <main className="relative z-10 flex flex-col items-center justify-start px-3 sm:px-4 pt-2 pb-2 sm:pt-4 sm:pb-4 max-w-5xl mx-auto w-full">
+      <main className="relative z-10 flex flex-1 flex-col items-center justify-start px-3 sm:px-4 pt-2 pb-2 sm:pt-4 sm:pb-4 max-w-5xl mx-auto w-full">
         {/* Welcoming Subtitle */}
         <div className="text-center mb-5 sm:mb-7">
           <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ${activeTheme.timerTextColor}`}>
@@ -376,30 +378,26 @@ export default function App() {
         />
       </main>
 
-      {/* A compact, decorated one-line footer kept directly below the statistics. */}
-      <footer className="relative z-10 w-full px-3 pt-3 pb-3 sm:pt-4 sm:pb-4">
-        <div
-          className={`relative mx-auto flex w-full max-w-md items-center justify-center gap-2.5 overflow-hidden rounded-2xl border px-3 py-2.5 shadow-lg backdrop-blur-md whitespace-nowrap sm:gap-3 sm:px-5 ${activeTheme.isLight
-            ? 'border-cyan-600/20 bg-white/75 shadow-slate-300/20'
-            : 'border-cyan-400/20 bg-gradient-to-r from-cyan-500/[0.09] via-slate-900/80 to-cyan-500/[0.09] shadow-cyan-950/20'}`}
-        >
-          <span aria-hidden="true" className="pointer-events-none absolute inset-x-[20%] top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
-          <span aria-hidden="true" className="pointer-events-none absolute -right-5 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-xl" />
-          <span aria-hidden="true" className="pointer-events-none absolute -left-5 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-xl" />
-          <span className="relative flex shrink-0 items-center gap-1.5">
-            <Timer className="h-3.5 w-3.5 text-cyan-400" strokeWidth={1.8} aria-hidden="true" />
-            <span className={`text-xs font-bold ${activeTheme.timerTextColor}`}>تينڤيلو</span>
+      {/* Full-width footer pinned by the flex-grow main. */}
+      <footer className={'relative z-10 mt-auto w-full shrink-0 border-t px-3 py-3 backdrop-blur-xl transition-colors duration-300 ' +
+        (activeTheme.isLight
+          ? 'border-cyan-700/15 bg-white/80 text-slate-700'
+          : 'border-cyan-300/10 bg-slate-950/55 text-slate-300')}>
+        <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/35 to-transparent" />
+        <div className="relative mx-auto flex max-w-5xl items-center justify-center gap-3 whitespace-nowrap text-xs">
+          <span className="inline-flex items-center gap-1.5 font-semibold">
+            <Timer className="h-4 w-4 text-cyan-400" strokeWidth={1.8} aria-hidden="true" />
+            <span className={activeTheme.timerTextColor}>تينڤيلو</span>
           </span>
-          <span aria-hidden="true" className="relative h-3.5 w-px shrink-0 bg-cyan-400/30" />
-          <a
-            href="https://study-tools-f3398d.pages.dev/"
-            className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] sm:text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 ${activeTheme.isLight
-              ? 'border-cyan-600/20 bg-cyan-50 text-cyan-800 hover:bg-cyan-100'
-              : 'border-cyan-400/20 bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20'}`}
-          >
-            <BookOpen className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden="true" />
-            <span>أدوات الدراسة</span>
-            <ArrowUpLeft className="h-3 w-3 opacity-75" aria-hidden="true" />
+          <span className="h-3.5 w-px bg-cyan-400/25" aria-hidden="true" />
+          <a href="https://study-tools-f3398d.pages.dev/"
+            className={'group inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-medium transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 ' +
+              (activeTheme.isLight
+                ? 'text-cyan-700 hover:bg-cyan-500/10'
+                : 'text-cyan-300 hover:bg-cyan-400/10 hover:text-cyan-100')}>
+            <BookOpen className="h-3.5 w-3.5" aria-hidden="true" />
+            أدوات الدراسة
+            <ArrowUpLeft className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
           </a>
         </div>
       </footer>
