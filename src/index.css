@@ -86,3 +86,13 @@
 @media (prefers-reduced-motion: reduce) {
   .tenvylo-header-action { transition: none; }
 }
+
+/* Four equally sized top actions that fit narrow Android viewports. */
+@media (max-width: 639px) {
+  .tenvylo-header-action {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+  }
+}
