@@ -226,7 +226,7 @@ export default function App() {
       </header>
 
       {/* Main Content Area - Optimized mobile vertical spacing */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-start px-3 sm:px-4 pt-2 pb-5 sm:pt-4 sm:pb-7 max-w-5xl mx-auto w-full">
+      <main className="relative z-10 flex flex-col items-center justify-start px-3 sm:px-4 pt-2 pb-2 sm:pt-4 sm:pb-4 max-w-5xl mx-auto w-full">
         {/* Welcoming Subtitle */}
         <div className="text-center mb-5 sm:mb-7">
           <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ${activeTheme.timerTextColor}`}>
@@ -375,7 +375,7 @@ export default function App() {
       </main>
 
       {/* Single-line, minimal footer; study tools link opens the requested site. */}
-      <footer className="relative z-10 w-full border-t border-white/10 px-3 py-3 text-center text-xs text-slate-400">
+      <footer className="relative z-10 w-full border-t border-white/10 px-3 py-2.5 text-center text-xs text-slate-400">
         <div className="flex items-center justify-center gap-3 whitespace-nowrap">
           <span className={`font-semibold ${activeTheme.timerTextColor}`}>تينڤيلو</span>
           <span aria-hidden="true" className="opacity-40">•</span>
